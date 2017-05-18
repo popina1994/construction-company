@@ -69,8 +69,12 @@ public class JavniTest {
             f.zaposleniRadiUMagacinu(listaZaposlenih.get(1), idMagacin);
         
         int idNUD = f.unesiNormuUgradnogDela("Ugradni deo 1", new BigDecimal(800), new BigDecimal(50));
+        f.obrisiNormuUgradnogDela(idNUD);
+        idNUD = f.unesiNormuUgradnogDela("Ugradni deo 1", new BigDecimal(800), new BigDecimal(50));
         
         int idRoba = f.unesiRobu("Pesak", "0001", idMaterijal);
+        f.obrisiRobu(idRoba);
+        idRoba = f.unesiRobu("Pesak", "0001", idMaterijal);
         f.unesiRobuUMagacinPoKolicini(idRoba, idMagacin, new BigDecimal(3000));
         f.unesiPotrebanMaterijalPoKolicini(idRoba, idNUD, new BigDecimal(500));
         
