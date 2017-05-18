@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,12 +27,15 @@ public class Zd130033 extends Funkcionalnosti{
 
     @Override
     public int unesiGradiliste(String naziv, Date datumOsnivanja) {
+        PreparedStatement preparedStatement = null; 
+        final int ERROR_CODE = -1;
+        
         try {
             String query = "INSERT INTO Gradiliste (Naziv, DatumOsnivanja, BrojObjekata)" 
                             + "VALUES ( ?, ?, 0)";
             Connection connection = DB.getConnection();
             
-            PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, naziv);
             preparedStatement.setDate(2, datumOsnivanja);
             preparedStatement.executeUpdate();
@@ -42,42 +46,238 @@ public class Zd130033 extends Funkcionalnosti{
             }
             else
             {
-                return -1;
+                return ERROR_CODE;
             }
         } catch (SQLException ex) {
             Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
-            return -1;
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
         }
     }
 
     @Override
     public int obrisiGradiliste(int idGradiliste) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        final int ERROR_CODE = 1;
+        final int OK_CODE = 0;
+        PreparedStatement preparedStatement = null;
+        try {
+            String query = "DELETE FROM Gradiliste WHERE IDGradiliste = ?";
+            Connection connection = DB.getConnection();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, idGradiliste);
+            preparedStatement.executeUpdate();
+            return OK_CODE;
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
+        
+        
+        
     }
 
     @Override
     public List<Integer> dohvatiSvaGradilista() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        final List<Integer> ERROR_CODE = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            String query = "SELECT IDGradiliste Id FROM Gradiliste";
+            Connection connection = DB.getConnection();
+            preparedStatement = connection.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            LinkedList <Integer> listIdGrad = new LinkedList<>();
+            while (resultSet.next())
+            {
+                listIdGrad.addLast(resultSet.getInt("Id"));
+            }
+            if (listIdGrad.isEmpty())
+            {
+                return ERROR_CODE;
+            }
+            return listIdGrad;
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override
     public int unesiObjekat(String naziv, int idGradiliste) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         PreparedStatement preparedStatement = null; 
+        final int ERROR_CODE = -1;
+        
+        try {
+            String query = "INSERT INTO Objekat (Naziv, IDGradiliste, BrojSpratova)" 
+                            + "VALUES ( ?, ?, 0)";
+            Connection connection = DB.getConnection();
+            
+            preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, naziv);
+            preparedStatement.setInt(2, idGradiliste);
+            preparedStatement.executeUpdate();
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            if (resultSet.next())
+            {
+                return resultSet.getInt(1);
+            }
+            else
+            {
+                return ERROR_CODE;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override
     public int obrisiObjekat(int idObjekat) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        final int ERROR_CODE = 1;
+        final int OK_CODE = 0;
+        PreparedStatement preparedStatement = null;
+        try {
+            String query = "DELETE FROM Objekat WHERE IDObjekat = ?";
+            Connection connection = DB.getConnection();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, idObjekat);
+            preparedStatement.executeUpdate();
+            return OK_CODE;
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
+        
     }
 
     @Override
     public int unesiSprat(int brSprata, int idObjekat) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         PreparedStatement preparedStatement = null; 
+        final int ERROR_CODE = -1;
+        
+        try {
+            String query = "INSERT INTO Sprat (RedniBroj, IDObjekat)" 
+                            + "VALUES ( ?, ?)";
+            Connection connection = DB.getConnection();
+            
+            preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setInt(1, brSprata);
+            preparedStatement.setInt(2, idObjekat);
+            preparedStatement.executeUpdate();
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            if (resultSet.next())
+            {
+                return resultSet.getInt(1);
+            }
+            else
+            {
+                return ERROR_CODE;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override
     public int obrisiSprat(int idSprat) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         final int ERROR_CODE = 1;
+        final int OK_CODE = 0;
+        PreparedStatement preparedStatement = null;
+        try {
+            String query = "DELETE FROM Sprat WHERE IDSprat = ?";
+            Connection connection = DB.getConnection();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, idSprat);
+            preparedStatement.executeUpdate();
+            return OK_CODE;
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
+        
     }
 
     @Override

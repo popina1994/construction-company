@@ -428,7 +428,7 @@ go
 ALTER TABLE [Zaduzio]
 	ADD CONSTRAINT [R_22] FOREIGN KEY ([IDZaposleni]) REFERENCES [Zaposleni]([IDZaposleni])
 		ON DELETE NO ACTION
-		ON NO ACTION
+		ON UPDATE NO ACTION
 go
 
 ALTER TABLE [Zaduzio]
@@ -443,3 +443,9 @@ ALTER TABLE [Zaposleni]
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTIOn
 go
+
+USE Projekat
+CREATE USER popina FOR LOGIN popina
+
+USE Projekat
+EXEC sp_addrolemember 'db_datawriter', 'popina'

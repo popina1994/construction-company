@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import util.Util;
 
@@ -26,8 +27,19 @@ public class JavniTest {
         Date trenutnoVreme;
         
         int idGradiliste = f.unesiGradiliste("Gradiliste 1", Date.valueOf("2015-08-25"));
+        f.obrisiGradiliste(idGradiliste);
+        idGradiliste = f.unesiGradiliste("Gradiliste 1", Date.valueOf("2015-08-25"));
+        List<Integer> listGrad = f.dohvatiSvaGradilista();
+        Iterator itListGrad = listGrad.iterator();
+        
+        System.out.println(itListGrad.next());
+        
         int idObjekat = f.unesiObjekat("Stambena zgrada 1", idGradiliste);
+        f.obrisiObjekat(idObjekat);
+        idObjekat = f.unesiObjekat("Stambena zgrada 1", idGradiliste);
         int idSprat0 = f.unesiSprat(0, idObjekat);
+        f.obrisiSprat(idSprat0);
+        idSprat0 = f.unesiSprat(0, idObjekat);
         int idSprat1 = f.unesiSprat(1, idObjekat);
         f.unesiSprat(2, idObjekat);
         f.unesiSprat(3, idObjekat);
