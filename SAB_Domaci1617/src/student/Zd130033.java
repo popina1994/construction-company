@@ -7,18 +7,47 @@ package student;
 
 import funkcionalnosti.Funkcionalnosti;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import student.util.DB;
 
 /**
  *
  * @author stefan
  */
-public class piggbbbb extends Funkcionalnosti{
+public class Zd130033 extends Funkcionalnosti{
 
     @Override
     public int unesiGradiliste(String naziv, Date datumOsnivanja) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            String query = "INSERT INTO Gradiliste (Naziv, DatumOsnivanja, BrojObjekata)" 
+                            + "VALUES ( ?, ?, 0)";
+            Connection connection = DB.getConnection();
+            
+            PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, naziv);
+            preparedStatement.setDate(2, datumOsnivanja);
+            preparedStatement.executeUpdate();
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            if (resultSet.next())
+            {
+                return resultSet.getInt(1);
+            }
+            else
+            {
+                return -1;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
     }
 
     @Override

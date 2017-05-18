@@ -8,7 +8,7 @@ package testiranje;
 import funkcionalnosti.Funkcionalnosti;
 import java.sql.Date;
 import java.util.List;
-import student.piggbbbb;
+import student.Zd130033;
 import testovi.JavniTest;
 
 /**
@@ -21,8 +21,8 @@ public class Testiranje {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Funkcionalnosti funkcionalnosti = new piggbbbb();
-
+        Funkcionalnosti funkcionalnosti = new Zd130033();
+        
         double procenata = JavniTest.test(funkcionalnosti);
         double koeficijentDomaci = 0.2;
         double koeficijentJavniTest = 0.5;
