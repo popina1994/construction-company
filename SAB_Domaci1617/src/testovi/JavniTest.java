@@ -47,6 +47,11 @@ public class JavniTest {
         int idAlat = f.unesiTipRobe("alat");
         int idMaterijal = f.unesiTipRobe("materijal");
         
+        int idZap = f.unesiZaposlenog("Milos", "Milosevic", "2503989720031", "M", "370-11032274-01", "milos@google.com", "069/1245301");
+        System.out.println(f.dohvatiUkupanIsplacenIznosZaZaposlenog(idZap));
+        System.out.println(f.dohvatiBrojTrenutnoZaduzeneOpremeZaZaposlenog(idZap));
+        System.out.println(f.dohvatiProsecnuOcenuZaZaposlenog(idZap));
+        f.obrisiZaposlenog(idZap);
         f.unesiZaposlenog("Milos", "Milosevic", "2503989720031", "M", "370-11032274-01", "milos@google.com", "069/1245301");
         f.unesiZaposlenog("Jovan", "Jovanovic", "2403989720031", "M", "370-11032274-02", "jovan@google.com", "069/1245302");
         f.unesiZaposlenog("Marko", "Markovic", "2402989720031", "M", "370-11032274-03", "marko@google.com", "069/1245303");
@@ -54,6 +59,9 @@ public class JavniTest {
         f.unesiZaposlenog("Katarina", "Vasic", "1204990720031", "Z", "370-11032274-04", "katarina@google.com", "069/1245304");
         
         List<Integer> listaZaposlenih = f.dohvatiSveZaposlene();
+        Iterator itListZap = listaZaposlenih.iterator();
+        System.out.println(itListZap.next());
+        
         int idMagacin = f.unesiMagacin(listaZaposlenih.get(0), new BigDecimal(500.00), idGradiliste);
         f.zaposleniRadiUMagacinu(listaZaposlenih.get(1), idMagacin);
         

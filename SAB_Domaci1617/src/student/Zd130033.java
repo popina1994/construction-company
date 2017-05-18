@@ -207,11 +207,55 @@ public class Zd130033 extends Funkcionalnosti{
         }
         
     }
+    
+    private int brojSpratova(int idObjekat)
+    {
+        PreparedStatement preparedStatement = null; 
+        final int ERROR_CODE = -1;
+        
+        try {
+            String query = "SELECT BrojSpratova brSpratova FROM Objekat WHERE IDObjekat = ?";
+            Connection connection = DB.getConnection();
+            
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, idObjekat);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next())
+            {
+                return resultSet.getInt("brSpratova");
+            }
+            else
+            {
+                return ERROR_CODE;
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
+    }
 
     @Override
     public int unesiSprat(int brSprata, int idObjekat) {
-         PreparedStatement preparedStatement = null; 
+        PreparedStatement preparedStatement = null; 
         final int ERROR_CODE = -1;
+        int brojSpratovaObjekta = brojSpratova(idObjekat);
+        if (brojSpratovaObjekta != brSprata)
+        {
+            return ERROR_CODE;
+        }
         
         try {
             String query = "INSERT INTO Sprat (RedniBroj, IDObjekat)" 
@@ -277,37 +321,233 @@ public class Zd130033 extends Funkcionalnosti{
                 }
             }
         }
-        
     }
 
     @Override
     public int unesiZaposlenog(String ime, String prezime, String jmbg, String pol, String ziroRacun, String email, String brojTelefona) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        PreparedStatement preparedStatement = null; 
+        final int ERROR_CODE = -1;
+        try {
+            String query = "INSERT INTO Zaposleni(Ime, Prezime, JMBG, ZiroRacun, "
+                    + "Email, BrojTelefona, ProsecnaOcena, BrojZaduzeneOpreme, "
+                    + "IsplaceniIznos, IDMagacin, Pol) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, 10, 0, 0, "
+                    + "NULL, ?)";
+            Connection connection = DB.getConnection();
+            
+            preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, ime);
+            preparedStatement.setString(2, prezime);
+            preparedStatement.setString(3, jmbg);
+            preparedStatement.setString(4, ziroRacun);
+            preparedStatement.setString(5, email);
+            preparedStatement.setString(6, brojTelefona);
+            preparedStatement.setString(7, pol);
+            preparedStatement.executeUpdate();
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            if (resultSet.next())
+            {
+                return resultSet.getInt(1);
+            }
+            else
+            {
+                return ERROR_CODE;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override
     public int obrisiZaposlenog(int idZaposleni) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         final int ERROR_CODE = 1;
+        final int OK_CODE = 0;
+        PreparedStatement preparedStatement = null;
+        try {
+            String query = "DELETE FROM Zaposleni WHERE IDZaposleni = ?";
+            Connection connection = DB.getConnection();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, idZaposleni);
+            preparedStatement.executeUpdate();
+            return OK_CODE;
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
+        
     }
 
     @Override
     public BigDecimal dohvatiUkupanIsplacenIznosZaZaposlenog(int idZaposleni) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         final BigDecimal ERROR_CODE = new BigDecimal(-1.0);
+        PreparedStatement preparedStatement = null;
+        try {
+            String query = "SELECT IsplaceniIznos iznos FROM Zaposleni "
+                    + "WHERE IDZaposleni= ?";
+            Connection connection = DB.getConnection();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, idZaposleni);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (!resultSet.next())
+            {
+                return ERROR_CODE;
+            }
+            else
+            {
+                return resultSet.getBigDecimal("iznos");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
-    @Override
+    @Override   
     public BigDecimal dohvatiProsecnuOcenuZaZaposlenog(int idZaposleni) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         final BigDecimal ERROR_CODE = new BigDecimal(-1.0);
+        PreparedStatement preparedStatement = null;
+        try {
+            String query = "SELECT ProsecnaOcena prosecna FROM Zaposleni "
+                    + "WHERE IDZaposleni= ?";
+            Connection connection = DB.getConnection();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, idZaposleni);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (!resultSet.next())
+            {
+                return ERROR_CODE;
+            }
+            else
+            {
+                return resultSet.getBigDecimal("prosecna");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override
     public int dohvatiBrojTrenutnoZaduzeneOpremeZaZaposlenog(int idZaposleni) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        final int ERROR_CODE = -1;
+        PreparedStatement preparedStatement = null;
+        try {
+            String query = "SELECT BrojZaduzeneOpreme zaduzen FROM Zaposleni "
+                    + "WHERE IDZaposleni= ?";
+            Connection connection = DB.getConnection();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, idZaposleni);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (!resultSet.next())
+            {
+                return ERROR_CODE;
+            }
+            else
+            {
+                return resultSet.getInt("zaduzen");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override
     public List<Integer> dohvatiSveZaposlene() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         final List<Integer> ERROR_CODE = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            String query = "SELECT IDZaposleni Id FROM Zaposleni";
+            Connection connection = DB.getConnection();
+            preparedStatement = connection.prepareStatement(query);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            LinkedList <Integer> listIdGrad = new LinkedList<>();
+            while (resultSet.next())
+            {
+                listIdGrad.addLast(resultSet.getInt("Id"));
+            }
+            if (listIdGrad.isEmpty())
+            {
+                return ERROR_CODE;
+            }
+            return listIdGrad;
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override
@@ -369,15 +609,34 @@ public class Zd130033 extends Funkcionalnosti{
     public int pogledajBrojJedinicaRobeUMagacinu(int idRoba, int idMagacin) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    private static final int HTZ_IDX = 0;
+    private static final int ALAT_IDX = 1;
+    private static final int MAT_IDX = 2;
+    
+    private static final String TIP_ROBE [] = new String[]
+                        {
+                            "HTZ",
+                            "alat",
+                            "materijal"
+                        };
+    
     @Override
     public int unesiTipRobe(String naziv) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        final int ERROR_CODE = -1;
+        for (int idx = 0; idx < TIP_ROBE.length; idx ++)
+        {
+            if (TIP_ROBE[idx].equals(naziv))
+            {
+                return idx;
+            }
+        }
+        return ERROR_CODE;
     }
 
     @Override
     public int obrisiTipRobe(int idTipRobe) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        final int OK_CODE = 0;
+        return OK_CODE;
     }
 
     @Override
