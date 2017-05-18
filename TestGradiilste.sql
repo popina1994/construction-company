@@ -43,3 +43,9 @@ DELETE
 FROM Gradiliste
 GO
 
+SELECT * FROM 
+TipRobe
+
+DELETE * FROM
+TipRobe
+

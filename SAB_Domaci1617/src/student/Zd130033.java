@@ -7,6 +7,7 @@ package student;
 
 import funkcionalnosti.Funkcionalnosti;
 import java.math.BigDecimal;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -399,7 +400,6 @@ public class Zd130033 extends Funkcionalnosti{
                 }
             }
         }
-        
     }
 
     @Override
@@ -552,7 +552,46 @@ public class Zd130033 extends Funkcionalnosti{
 
     @Override
     public int unesiMagacin(int idSef, BigDecimal plata, int idGradiliste) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       CallableStatement callableStatement = null; 
+        final int ERROR_CODE = -1;
+        
+        try {
+            String query = "{? = CALL InsertMagacin(?, ?, ?) }";
+            Connection connection = DB.getConnection();
+            
+            callableStatement = connection.prepareCall(query);
+            callableStatement.registerOutParameter(1, java.sql.Types.INTEGER);
+            callableStatement.setInt(2, idGradiliste);
+            callableStatement.setInt(3, idSef);
+            callableStatement.setBigDecimal(4, plata);
+            callableStatement.execute();
+            
+            int retVal = callableStatement.getInt(1);
+            if (ERROR_CODE != retVal)
+            {
+                return retVal;
+            }
+            else 
+            {
+                return ERROR_CODE;
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (callableStatement != null)
+            {
+                try {
+                    callableStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override
@@ -609,34 +648,80 @@ public class Zd130033 extends Funkcionalnosti{
     public int pogledajBrojJedinicaRobeUMagacinu(int idRoba, int idMagacin) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    private static final int HTZ_IDX = 0;
-    private static final int ALAT_IDX = 1;
-    private static final int MAT_IDX = 2;
     
-    private static final String TIP_ROBE [] = new String[]
-                        {
-                            "HTZ",
-                            "alat",
-                            "materijal"
-                        };
+    private static final String HTZ_NAME = "HTZ";
+    private static final String ALAT_NAME = "alat";
+    private static final String MAT_NAME = "materijal";
+    
     
     @Override
     public int unesiTipRobe(String naziv) {
+        PreparedStatement preparedStatement = null; 
         final int ERROR_CODE = -1;
-        for (int idx = 0; idx < TIP_ROBE.length; idx ++)
-        {
-            if (TIP_ROBE[idx].equals(naziv))
+        
+        try {
+            String query = "INSERT INTO TipRobe (Naziv)"
+                    + " VALUES(?)";
+            Connection connection = DB.getConnection();
+            
+            preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, naziv);
+            preparedStatement.executeUpdate();
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            if (resultSet.next())
             {
-                return idx;
+                return resultSet.getInt(1);
+            }
+            else
+            {
+                return ERROR_CODE;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
             }
         }
-        return ERROR_CODE;
     }
 
     @Override
     public int obrisiTipRobe(int idTipRobe) {
+        final int ERROR_CODE = 1;
         final int OK_CODE = 0;
-        return OK_CODE;
+        PreparedStatement preparedStatement = null;
+        try {
+            String query = "DELETE FROM TipRobe WHERE IDTipRobe = ?";
+            Connection connection = DB.getConnection();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, idTipRobe);
+            preparedStatement.executeUpdate();
+            return OK_CODE;
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override
@@ -656,7 +741,44 @@ public class Zd130033 extends Funkcionalnosti{
 
     @Override
     public int zaposleniRadiUMagacinu(int idZaposleni, int idMagacin) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        CallableStatement callableStatement = null; 
+        final int ERROR_CODE = -1;
+        
+        try {
+            String query = "{? = CALL ZaposliUMagacin(?, ?) }";
+            Connection connection = DB.getConnection();
+            
+            callableStatement = connection.prepareCall(query);
+            callableStatement.registerOutParameter(1, java.sql.Types.INTEGER);
+            callableStatement.setInt(2, idZaposleni);
+            callableStatement.setInt(3, idMagacin);
+            callableStatement.execute();
+            
+            if (ERROR_CODE != callableStatement.getInt(1))
+            {
+                return idZaposleni;
+            }
+            else 
+            {
+                return ERROR_CODE;
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (callableStatement != null)
+            {
+                try {
+                    callableStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override

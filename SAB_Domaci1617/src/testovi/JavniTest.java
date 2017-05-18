@@ -44,8 +44,11 @@ public class JavniTest {
         f.unesiSprat(2, idObjekat);
         f.unesiSprat(3, idObjekat);
         int idHTZ = f.unesiTipRobe("HTZ");
+        f.obrisiTipRobe(idHTZ);
+        idHTZ = f.unesiTipRobe("HTZ");
         int idAlat = f.unesiTipRobe("alat");
         int idMaterijal = f.unesiTipRobe("materijal");
+        
         
         int idZap = f.unesiZaposlenog("Milos", "Milosevic", "2503989720031", "M", "370-11032274-01", "milos@google.com", "069/1245301");
         System.out.println(f.dohvatiUkupanIsplacenIznosZaZaposlenog(idZap));
@@ -63,11 +66,9 @@ public class JavniTest {
         System.out.println(itListZap.next());
         
         int idMagacin = f.unesiMagacin(listaZaposlenih.get(0), new BigDecimal(500.00), idGradiliste);
-        f.zaposleniRadiUMagacinu(listaZaposlenih.get(1), idMagacin);
+            f.zaposleniRadiUMagacinu(listaZaposlenih.get(1), idMagacin);
         
         int idNUD = f.unesiNormuUgradnogDela("Ugradni deo 1", new BigDecimal(800), new BigDecimal(50));
-        
-        //List<Integer> materijali = new ArrayList<>();
         
         int idRoba = f.unesiRobu("Pesak", "0001", idMaterijal);
         f.unesiRobuUMagacinPoKolicini(idRoba, idMagacin, new BigDecimal(3000));
