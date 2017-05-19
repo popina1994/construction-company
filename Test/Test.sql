@@ -17,7 +17,8 @@ DELETE FROM Gradiliste
 DELETE FROM Roba
 DELETE FROM TipRobe
 DELETE FROM Norma
-
+SELECT * FROM Posao
+SELECT * FROM Magacin
 
 SELECT * FROM Roba
 
@@ -28,3 +29,6 @@ SELECT * FROM SadrziJedinica
 SELECT * FROM SadrziKolicina
 SELECT * FROM ImaJedinica
 SELECT * FROM ImaKolicine
+
+SELECT * FROM ImaJedinica
+SELECT * FROM Posao

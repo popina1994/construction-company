@@ -143,18 +143,20 @@ public class JavniTest {
         int idPosao1 = f.unesiPosao(idNUD, idSprat0, trenutnoVreme);
         f.obrisiPosao(idPosao1);
         idPosao1 = f.unesiPosao(idNUD, idSprat0, trenutnoVreme);
+        // TODO : add check constraint for time
         int idZ2P1 = f.zaposleniRadiNaPoslu(listaZaposlenih.get(2), idPosao1, trenutnoVreme);
         Date pocetakRadaZ2P1 = trenutnoVreme;
         trenutnoVreme = Date.valueOf("2016-01-10");
         int idZ3P1 = f.zaposleniRadiNaPoslu(listaZaposlenih.get(3), idPosao1, trenutnoVreme);
         Date pocetakRadaZ3P1 = trenutnoVreme;
-        
+        // TO DO add check constraint for mark.
         f.zaposleniDobijaOcenu(idZ2P1, 7);
         f.zaposleniDobijaOcenu(idZ3P1, 9);
         
         List<Integer> zaduzenjaOpreme = new ArrayList<>();
         
         trenutnoVreme = Date.valueOf("2016-06-10");
+        // TO DO add procedure for magacin 
         int idZO = f.zaposleniZaduzujeOpremu(listaZaposlenih.get(2), idMagacin, htzOprema.get(0), trenutnoVreme, "...");
         zaduzenjaOpreme.add(idZO);
         
