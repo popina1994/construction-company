@@ -34,11 +34,15 @@ BEGIN
 	DECLARE @IDSadrzi IDType
 
     -- Insert statements for procedure here
-	BEGIN TRANSACTION
+	
 	BEGIN TRY
+		BEGIN TRANSACTION
+		SAVE TRAN ProcInsertSadrzi
 		INSERT INTO Sadrzi(IDNorma, IDRoba)
 		VALUES (@IDNorma, @IDRoba)
 		SET @IDSadrzi = SCOPE_IDENTITY()
+		COMMIT TRAN
+		RETURN @IDSadrzi
 	END TRY
 	BEGIN CATCH
 			SELECT
@@ -48,15 +52,11 @@ BEGIN
 			,ERROR_PROCEDURE() AS ErrorProcedure
 			,ERROR_LINE() AS ErrorLine
 			,ERROR_MESSAGE() AS ErrorMessage;
-			IF @@TRANCOUNT > 0
-		BEGIN
-			ROLLBACK TRANSACTION;
-		END
-		RETURN -1;
+		ROLLBACK TRANSACTION ProcInsertSadrzi;
+		THROW;
 
 	END CATCH
-	IF @@TRANCOUNT > 0
-		COMMIT TRAN
-	RETURN @IDSadrzi
+		
+	
 END
 GO

@@ -18,51 +18,69 @@ GO
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-ALTER PROCEDURE InsertSadrziKolicina
+ALTER PROCEDURE TakeMaterijalForNorma
 	-- Add the parameters for the stored procedure here
-	
-	@IDRoba IDType,
 	@IDNorma IDType,
-	@kolicina FloatType
+	@IDMagacin IDType
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
-	DECLARE @IDSadrzi IDType
 
-	
+	DECLARE @Cursor CURSOR 
+	DECLARE @IDSadrzi IDType
+	DECLARE @Jedinica int
+	DECLARE @IDRoba IDType
+
+	-- Insert statements for procedure here
 	BEGIN TRY
 		BEGIN TRANSACTION
-		SAVE TRAN ProcInsertSadrziKolicina
-		DECLARE	@return_value IDType
-		EXEC	@return_value = [dbo].[InsertSadrzi]
-		@IDRoba = @IDRoba,
-		@IDNorma = @IDNorma
+        SAVE TRANSACTION ProcTakeMaterijalForNorma;
+		SET @Cursor = CURSOR FOR 
+		SELECT Sadrzi.IDSadrzi AS IDSadrzi, Broj, IDRoba 
+		FROM SadrziJedinica, Sadrzi
+		WHERE IDNorma = @IDNorma AND Sadrzi.IDSadrzi = SadrziJedinica.IDSadrzi
 
-		IF @return_value = -1
+		OPEN @Cursor
+	
+		FETCH NEXT FROM @Cursor
+		INTO @IDSadrzi, @Jedinica, @IDRoba
+		WHILE @@FETCH_STATUS = 0
 		BEGIN
-			THROW 50000, 'Something is wrong with execution of InsertSadrzi', 1;
-		END
-		SET @IDSadrzi = @return_value
+			DECLARE @IDIma IDType
+			SET @IDIma  = -1
+			SELECT @IDIma = Ima.Idima  
+			FROM Ima, ImaJedinica
+			WHERE IMa.IDIma = ImaJedinica.IDIma AND IDRoba = @IDRoba AND @IDMagacin = IDMagacin
 
-		INSERT INTO SadrziKolicina(IDSadrzi, Kolicina)
-		VALUES (@IDSadrzi, @kolicina)
-		COMMIT TRANSACTION;
-		RETURN @IDSadrzi
+			SELECT 'Ima'= @IDIma
+			SELECT 'Roba'= @IDRoba
+			SELECT 'Magacin'= @IDMagacin
+
+			EXEC	 [dbo].[TakeImaJedinica]
+					@IDIma = @IDIma,
+					@Jedinica = @Jedinica
+
+			
+			FETCH NEXT FROM @Cursor
+			INTO @IDSadrzi, @Jedinica, @IDRoba
+		END 
+
+		CLOSE @Cursor
+		DEALLOCATE @Cursor
 	END TRY
 	BEGIN CATCH
-		SELECT
+	SELECT
 			ERROR_NUMBER() AS ErrorNumber
 			,ERROR_SEVERITY() AS ErrorSeverity
 			,ERROR_STATE() AS ErrorState
 			,ERROR_PROCEDURE() AS ErrorProcedure
 			,ERROR_LINE() AS ErrorLine
 			,ERROR_MESSAGE() AS ErrorMessage;
-		ROLLBACK TRANSACTION ProcInsertSadrziKolicina;
-		THROW
+        ROLLBACK TRANSACTION ProcTakeMaterijalForNorma;
+		throw;		
 	END CATCH
-		
-	
+
 END
 GO

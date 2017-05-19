@@ -18,7 +18,7 @@ GO
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-CREATE PROCEDURE InsertSadrziJedinica
+ALTER PROCEDURE InsertSadrziJedinica
 	-- Add the parameters for the stored procedure here
 		@IDRoba IDType,
 	@IDNorma IDType,
@@ -30,8 +30,10 @@ BEGIN
 	SET NOCOUNT ON;
 	DECLARE @IDSadrzi IDType
 
-	BEGIN TRANSACTION
-		BEGIN TRY
+	
+	BEGIN TRY
+		BEGIN TRANSACTION
+		SAVE TRAN ProcInsertSadrziJedinica
 		DECLARE	@return_value IDType
 		EXEC	@return_value = [dbo].[InsertSadrzi]
 		@IDRoba = @IDRoba,
@@ -39,15 +41,16 @@ BEGIN
 
 		IF @return_value = -1
 		BEGIN
-			THROW -1, 'Something is wrong with execution of InsertSadrzi', 1;
+			THROW 50000, 'Something is wrong with execution of InsertSadrzi', 1;
 		END
 		SET @IDSadrzi = @return_value
 
 		INSERT INTO SadrziJedinica(IDSadrzi, Broj)
 		VALUES (@IDSadrzi, @jedinica)
-
-		END TRY
-			BEGIN CATCH
+		COMMIT TRANSACTION;
+		RETURN @IDSadrzi
+	END TRY
+	BEGIN CATCH
 		SELECT
 			ERROR_NUMBER() AS ErrorNumber
 			,ERROR_SEVERITY() AS ErrorSeverity
@@ -55,14 +58,9 @@ BEGIN
 			,ERROR_PROCEDURE() AS ErrorProcedure
 			,ERROR_LINE() AS ErrorLine
 			,ERROR_MESSAGE() AS ErrorMessage;
-			IF @@TRANCOUNT > 0
-			BEGIN
-				ROLLBACK TRANSACTION;
-			END
-		RETURN -1;
+		ROLLBACK TRANSACTION ProcInsertSadrziJedinica;
+		THROW;
 	END CATCH
-	IF @@TRANCOUNT > 0
-		COMMIT TRANSACTION;
-	RETURN @IDSadrzi
+	
 END
 GO

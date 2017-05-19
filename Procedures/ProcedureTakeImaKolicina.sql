@@ -18,38 +18,43 @@ GO
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-ALTER PROCEDURE InsertSadrziKolicina
+ALTER PROCEDURE TakeImaKolicina
 	-- Add the parameters for the stored procedure here
-	
-	@IDRoba IDType,
-	@IDNorma IDType,
+	@IDIma IDType,
 	@kolicina FloatType
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
-	DECLARE @IDSadrzi IDType
-
+    -- Insert statements for procedure here
 	
 	BEGIN TRY
-		BEGIN TRANSACTION
-		SAVE TRAN ProcInsertSadrziKolicina
-		DECLARE	@return_value IDType
-		EXEC	@return_value = [dbo].[InsertSadrzi]
-		@IDRoba = @IDRoba,
-		@IDNorma = @IDNorma
-
-		IF @return_value = -1
+		BEGIN TRANSACTION ProcTakeImaKolicina
+		SAVE TRAN ProcTakeImaKolicina
+		IF EXISTS (SELECT * FROM ImaKolicine WHERE @IDIma = IDIma)
 		BEGIN
-			THROW 50000, 'Something is wrong with execution of InsertSadrzi', 1;
+			DECLARE @oldKolicina int
+			SELECT @oldKolicina = Kolicina FROM ImaKolicine WHERE @IDIma = IDIma
+			IF (@kolicina > @oldKolicina)
+			BEGIN
+				RETURN -1
+			END
+			ELSE IF (@kolicina = @oldKolicina)
+			BEGIN
+				DELETE FROM Ima WHERE @IDIma = IDIma
+			END
+			ELSE 
+			BEGIN
+				UPDATE ImaKolicine
+				SET Kolicina = Kolicina - @kolicina
+				WHERE @IDIma = IDIma
+			END
 		END
-		SET @IDSadrzi = @return_value
+		ELSE 
+			THROW 50000, 'Wrong id', 1;
 
-		INSERT INTO SadrziKolicina(IDSadrzi, Kolicina)
-		VALUES (@IDSadrzi, @kolicina)
 		COMMIT TRANSACTION;
-		RETURN @IDSadrzi
 	END TRY
 	BEGIN CATCH
 		SELECT
@@ -59,10 +64,9 @@ BEGIN
 			,ERROR_PROCEDURE() AS ErrorProcedure
 			,ERROR_LINE() AS ErrorLine
 			,ERROR_MESSAGE() AS ErrorMessage;
-		ROLLBACK TRANSACTION ProcInsertSadrziKolicina;
-		THROW
+			
+			ROLLBACK TRANSACTION ProcTakeImaKolicina;
+			THROW;		
 	END CATCH
-		
-	
 END
 GO

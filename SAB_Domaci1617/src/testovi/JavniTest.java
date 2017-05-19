@@ -141,6 +141,8 @@ public class JavniTest {
         trenutnoVreme = Date.valueOf("2016-01-01");
         Date pocetakPosla1 = trenutnoVreme;
         int idPosao1 = f.unesiPosao(idNUD, idSprat0, trenutnoVreme);
+        f.obrisiPosao(idPosao1);
+        idPosao1 = f.unesiPosao(idNUD, idSprat0, trenutnoVreme);
         int idZ2P1 = f.zaposleniRadiNaPoslu(listaZaposlenih.get(2), idPosao1, trenutnoVreme);
         Date pocetakRadaZ2P1 = trenutnoVreme;
         trenutnoVreme = Date.valueOf("2016-01-10");
