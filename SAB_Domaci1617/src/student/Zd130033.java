@@ -618,12 +618,90 @@ public class Zd130033 extends Funkcionalnosti{
 
     @Override
     public int unesiRobuUMagacinPoKolicini(int idRoba, int idMagacin, BigDecimal kolicina) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         CallableStatement callableStatement = null; 
+        final int ERROR_CODE = -1;
+        
+        try {
+            String query = "{? = CALL InsertImaKolicina(?, ?, ?) }";
+            Connection connection = DB.getConnection();
+            
+            callableStatement = connection.prepareCall(query);
+            callableStatement.registerOutParameter(1, java.sql.Types.INTEGER);
+            callableStatement.setInt(2, idMagacin);
+            callableStatement.setInt(3, idRoba);
+            callableStatement.setBigDecimal(4, kolicina);
+            callableStatement.execute();
+            
+            int retVal = callableStatement.getInt(1);
+            if (ERROR_CODE != retVal)
+            {
+                return retVal;
+            }
+            else 
+            {
+                return ERROR_CODE;
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (callableStatement != null)
+            {
+                try {
+                    callableStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override
     public int unesiRobuUMagacinPoBrojuJedinica(int idRoba, int idMagacin, int brojJedinica) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         CallableStatement callableStatement = null; 
+        final int ERROR_CODE = -1;
+        
+        try {
+            String query = "{? = CALL InsertImaJedinica(?, ?, ?) }";
+            Connection connection = DB.getConnection();
+            
+            callableStatement = connection.prepareCall(query);
+            callableStatement.registerOutParameter(1, java.sql.Types.INTEGER);
+            callableStatement.setInt(2, idMagacin);
+            callableStatement.setInt(3, idRoba);
+            callableStatement.setInt(4, brojJedinica);
+            callableStatement.execute();
+            
+            int retVal = callableStatement.getInt(1);
+            if (ERROR_CODE != retVal)
+            {
+                return retVal;
+            }
+            else 
+            {
+                return ERROR_CODE;
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (callableStatement != null)
+            {
+                try {
+                    callableStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override
@@ -934,12 +1012,90 @@ public class Zd130033 extends Funkcionalnosti{
 
     @Override
     public int unesiPotrebanMaterijalPoBrojuJedinica(int idRobaKojaJePotrosniMaterijal, int idNormaUgradnogDela, int brojJedinica) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         CallableStatement callableStatement = null; 
+        final int ERROR_CODE = -1;
+        
+        try {
+            String query = "{? = CALL InsertSadrziJedinica(?, ?, ?) }";
+            Connection connection = DB.getConnection();
+            
+            callableStatement = connection.prepareCall(query);
+            callableStatement.registerOutParameter(1, java.sql.Types.INTEGER);
+            callableStatement.setInt(2, idRobaKojaJePotrosniMaterijal);
+            callableStatement.setInt(3, idNormaUgradnogDela);
+            callableStatement.setInt(4, brojJedinica);
+            callableStatement.execute();
+            
+            int retVal = callableStatement.getInt(1);
+            if (ERROR_CODE != retVal)
+            {
+                return retVal;
+            }
+            else 
+            {
+                return ERROR_CODE;
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (callableStatement != null)
+            {
+                try {
+                    callableStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override
     public int unesiPotrebanMaterijalPoKolicini(int idRobaKojaJePotrosniMaterijal, int idNormaUgradnogDela, BigDecimal kolicina) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         CallableStatement callableStatement = null; 
+        final int ERROR_CODE = -1;
+        
+        try {
+            String query = "{? = CALL InsertSadrziKolicina(?, ?, ?) }";
+            Connection connection = DB.getConnection();
+            
+            callableStatement = connection.prepareCall(query);
+            callableStatement.registerOutParameter(1, java.sql.Types.INTEGER);
+            callableStatement.setInt(2, idRobaKojaJePotrosniMaterijal);
+            callableStatement.setInt(3, idNormaUgradnogDela);
+            callableStatement.setBigDecimal(4, kolicina);
+            callableStatement.execute();
+            
+            int retVal = callableStatement.getInt(1);
+            if (ERROR_CODE != retVal)
+            {
+                return retVal;
+            }
+            else 
+            {
+                return ERROR_CODE;
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (callableStatement != null)
+            {
+                try {
+                    callableStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override

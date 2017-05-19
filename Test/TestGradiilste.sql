@@ -2,13 +2,13 @@ DELETE FROM Gradiliste
 WHERE IDGradiliste = 0
 
 SELECT * 
-FROM Gradiliste
+FROM Magacin
 
 INSERT INTO Gradiliste (Naziv, DatumOsnivanja, BrojObjekata)
 VALUES ('Gradi', '11-11-11', 0)
 
 INSERT INTO Objekat (Naziv, IDGradiliste, BrojSpratova)
-VALUES ('Test', 22, 0)
+VALUES ('Test', 19, 0)
 
 INSERT INTO Sprat(RedniBroj, IDObjekat)
 VALUES  (0, 14)
@@ -31,6 +31,9 @@ SELECT *
 FROM Gradiliste
 GO
 
+SELECT * 
+FROM Roba
+
 DELETE 
 FROM Sprat
 GO
@@ -42,4 +45,10 @@ GO
 DELETE
 FROM Gradiliste
 GO
+
+SELECT * FROM 
+TipRobe
+
+DELETE * FROM
+TipRobe
 

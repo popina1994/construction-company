@@ -45,36 +45,35 @@ go
 CREATE TABLE [Ima]
 (
 	[IDMagacin]          [IDType] ,
-	[IDRoba]             [IDType]
+	[IDRoba]             [IDType] ,
+	[IDIma]              [IDType]  IDENTITY ( 0,1 )
 )
 go
 
 ALTER TABLE [Ima]
-	ADD CONSTRAINT [XPKIma] PRIMARY KEY  CLUSTERED ([IDMagacin] ASC,[IDRoba] ASC)
+	ADD CONSTRAINT [XPKIma] PRIMARY KEY  CLUSTERED ([IDIma] ASC)
 go
 
 CREATE TABLE [ImaJedinica]
 (
-	[IDMagacin]          [IDType] ,
-	[IDRoba]             [IDType] ,
-	[Jedinica]           integer  NULL
+	[Jedinica]           integer  NULL ,
+	[IDIma]              [IDType]
 )
 go
 
 ALTER TABLE [ImaJedinica]
-	ADD CONSTRAINT [XPKImaJedinica] PRIMARY KEY  CLUSTERED ([IDMagacin] ASC,[IDRoba] ASC)
+	ADD CONSTRAINT [XPKImaJedinica] PRIMARY KEY  CLUSTERED ([IDIma] ASC)
 go
 
 CREATE TABLE [ImaKolicine]
 (
-	[IDMagacin]          [IDType] ,
-	[IDRoba]             [IDType] ,
-	[Kolicina]           [FloatType]
+	[Kolicina]           [FloatType] ,
+	[IDIma]              [IDType]
 )
 go
 
 ALTER TABLE [ImaKolicine]
-	ADD CONSTRAINT [XPKImaKolicine] PRIMARY KEY  CLUSTERED ([IDMagacin] ASC,[IDRoba] ASC)
+	ADD CONSTRAINT [XPKImaKolicine] PRIMARY KEY  CLUSTERED ([IDIma] ASC)
 go
 
 CREATE TABLE [Magacin]
@@ -128,14 +127,13 @@ go
 
 CREATE TABLE [Ocena]
 (
-	[IDZaposleni]        [IDType] ,
-	[IDPosao]            [IDType] ,
-	[Ocena]              integer  NULL
+	[Ocena]              integer  NULL ,
+	[IDRad]              [IDType]
 )
 go
 
 ALTER TABLE [Ocena]
-	ADD CONSTRAINT [XPKOcena] PRIMARY KEY  CLUSTERED ([IDZaposleni] ASC,[IDPosao] ASC)
+	ADD CONSTRAINT [XPKOcena] PRIMARY KEY  CLUSTERED ([IDRad] ASC)
 go
 
 CREATE TABLE [Posao]
@@ -158,12 +156,13 @@ CREATE TABLE [Rad]
 	[IDZaposleni]        [IDType] ,
 	[IDPosao]            [IDType] ,
 	[DatumPocetka]       [DateType]  NOT NULL ,
-	[DatumKraja]         [DateType]
+	[DatumKraja]         [DateType] ,
+	[IDRad]              [IDType]  IDENTITY ( 0,1 )
 )
 go
 
 ALTER TABLE [Rad]
-	ADD CONSTRAINT [XPKRad] PRIMARY KEY  CLUSTERED ([IDZaposleni] ASC,[IDPosao] ASC)
+	ADD CONSTRAINT [XPKRad] PRIMARY KEY  CLUSTERED ([IDRad] ASC)
 go
 
 CREATE TABLE [Roba]
@@ -182,36 +181,35 @@ go
 CREATE TABLE [Sadrzi]
 (
 	[IDNorma]            [IDType] ,
-	[IDRoba]             [IDType]
+	[IDRoba]             [IDType] ,
+	[IDSadrzi]           [IDType]  IDENTITY ( 0,1 )
 )
 go
 
 ALTER TABLE [Sadrzi]
-	ADD CONSTRAINT [XPKSadrzi] PRIMARY KEY  CLUSTERED ([IDNorma] ASC,[IDRoba] ASC)
+	ADD CONSTRAINT [XPKSadrzi] PRIMARY KEY  CLUSTERED ([IDSadrzi] ASC)
 go
 
 CREATE TABLE [SadrziJedinica]
 (
 	[Broj]               integer  NULL ,
-	[IDNorma]            [IDType] ,
-	[IDRoba]             [IDType]
+	[IDSadrzi]           [IDType]
 )
 go
 
 ALTER TABLE [SadrziJedinica]
-	ADD CONSTRAINT [XPKSadrziJedinica] PRIMARY KEY  CLUSTERED ([IDNorma] ASC,[IDRoba] ASC)
+	ADD CONSTRAINT [XPKSadrziJedinica] PRIMARY KEY  CLUSTERED ([IDSadrzi] ASC)
 go
 
 CREATE TABLE [SadrziKolicina]
 (
 	[Kolicina]           [FloatType] ,
-	[IDNorma]            [IDType] ,
-	[IDRoba]             [IDType]
+	[IDSadrzi]           [IDType]
 )
 go
 
 ALTER TABLE [SadrziKolicina]
-	ADD CONSTRAINT [XPKSadrziKolicina] PRIMARY KEY  CLUSTERED ([IDNorma] ASC,[IDRoba] ASC)
+	ADD CONSTRAINT [XPKSadrziKolicina] PRIMARY KEY  CLUSTERED ([IDSadrzi] ASC)
 go
 
 CREATE TABLE [Sef]
@@ -308,14 +306,14 @@ go
 
 
 ALTER TABLE [ImaJedinica]
-	ADD CONSTRAINT [R_7] FOREIGN KEY ([IDMagacin],[IDRoba]) REFERENCES [Ima]([IDMagacin],[IDRoba])
+	ADD CONSTRAINT [R_7] FOREIGN KEY ([IDIma]) REFERENCES [Ima]([IDIma])
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 go
 
 
 ALTER TABLE [ImaKolicine]
-	ADD CONSTRAINT [R_8] FOREIGN KEY ([IDMagacin],[IDRoba]) REFERENCES [Ima]([IDMagacin],[IDRoba])
+	ADD CONSTRAINT [R_8] FOREIGN KEY ([IDIma]) REFERENCES [Ima]([IDIma])
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 go
@@ -349,7 +347,7 @@ go
 
 
 ALTER TABLE [Ocena]
-	ADD CONSTRAINT [R_35] FOREIGN KEY ([IDZaposleni],[IDPosao]) REFERENCES [Rad]([IDZaposleni],[IDPosao])
+	ADD CONSTRAINT [R_35] FOREIGN KEY ([IDRad]) REFERENCES [Rad]([IDRad])
 		ON DELETE NO ACTION
 		ON UPDATE CASCADE
 go
@@ -402,14 +400,14 @@ go
 
 
 ALTER TABLE [SadrziJedinica]
-	ADD CONSTRAINT [R_36] FOREIGN KEY ([IDNorma],[IDRoba]) REFERENCES [Sadrzi]([IDNorma],[IDRoba])
+	ADD CONSTRAINT [R_36] FOREIGN KEY ([IDSadrzi]) REFERENCES [Sadrzi]([IDSadrzi])
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 go
 
 
 ALTER TABLE [SadrziKolicina]
-	ADD CONSTRAINT [R_37] FOREIGN KEY ([IDNorma],[IDRoba]) REFERENCES [Sadrzi]([IDNorma],[IDRoba])
+	ADD CONSTRAINT [R_37] FOREIGN KEY ([IDSadrzi]) REFERENCES [Sadrzi]([IDSadrzi])
 		ON DELETE CASCADE
 		ON UPDATE CASCADE
 go
@@ -454,6 +452,7 @@ ALTER TABLE [Zaposleni]
 		ON UPDATE NO ACTION
 go
 
+
 USE [Projekat]
 GO
 
@@ -479,7 +478,7 @@ BEGIN
 	SET NOCOUNT ON;
 
     DECLARE @cursorInserted CURSOR
-	DECLARE @IDGradiliste int
+	DECLARE @IDGradiliste IdType
 
 	SET @cursorInserted = CURSOR FOR
 	SELECT IDGradiliste
@@ -539,7 +538,7 @@ BEGIN
 	SET NOCOUNT ON;
 
     DECLARE @cursorDeleted CURSOR
-	DECLARE @IDGradiliste int
+	DECLARE @IDGradiliste IdType
 
 	SET @cursorDeleted = CURSOR FOR
 	SELECT IDGradiliste
@@ -592,7 +591,7 @@ BEGIN
 	SET NOCOUNT ON;
 
     DECLARE @cursorInserted CURSOR
-	DECLARE @IDObjekat int
+	DECLARE @IDObjekat IdType
 
 	SET @cursorInserted = CURSOR FOR
 	SELECT IDObjekat
@@ -647,7 +646,7 @@ BEGIN
 
 
     DECLARE @cursorDeleted CURSOR
-	DECLARE @IDObjekat int
+	DECLARE @IDObjekat IdType
 
 	SET @cursorDeleted = CURSOR FOR
 	SELECT IDObjekat
@@ -676,6 +675,425 @@ END
 GO
 
 
+USE [Projekat]
+GO
+
+/****** Object:  StoredProcedure [dbo].[InsertIma]    Script Date: 19.05.2017. 2:05:29 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[InsertIma]
+	-- Add the parameters for the stored procedure here
+	@IDMagacin IDType,
+	@IDRoba IDType
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	BEGIN TRANSACTION
+	BEGIN TRY
+		INSERT INTO Ima(IDMagacin, IDRoba)
+		VALUES (@IDMagacin, @IDRoba)
+	END TRY
+	BEGIN CATCH
+	END CATCH
+	IF @@TRANCOUNT > 0
+		COMMIT TRAN
+END
+
+GO
+
+
+USE [Projekat]
+GO
+
+/****** Object:  StoredProcedure [dbo].[ZaposliUMagacin]    Script Date: 19.05.2017. 2:06:32 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[ZaposliUMagacin]
+	-- Add the parameters for the stored procedure here
+	@IDZaposleni IDType,
+	@IDMagacin IDType
+
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	BEGIN TRANSACTION
+	BEGIN TRY
+		UPDATE Zaposleni SET IDMagacin = @IDMagacin WHERE IDZaposleni = @IDZaposleni
+	END TRY
+	BEGIN CATCH
+		SELECT
+			ERROR_NUMBER() AS ErrorNumber
+			,ERROR_SEVERITY() AS ErrorSeverity
+			,ERROR_STATE() AS ErrorState
+			,ERROR_PROCEDURE() AS ErrorProcedure
+			,ERROR_LINE() AS ErrorLine
+			,ERROR_MESSAGE() AS ErrorMessage;
+			IF @@TRANCOUNT > 0
+				ROLLBACK TRANSACTION;
+			RETURN -1
+	END CATCH
+	IF @@TRANCOUNT > 0
+		COMMIT TRANSACTION;
+	RETURN 0
+END
+
+GO
+
+USE [Projekat]
+GO
+
+/****** Object:  StoredProcedure [dbo].[InsertMagacin]    Script Date: 19.05.2017. 2:06:23 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[InsertMagacin]
+	-- Add the parameters for the stored procedure here
+	@IDGradiliste IDType,
+	@IDSef IDType,
+	@plata FloatType
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	DECLARE @IDMagacinRet IDType
+
+    BEGIN TRANSACTION
+	BEGIN TRY
+		INSERT INTO Sef(IDZaposleni) VALUES (@IDSef)
+		INSERT INTO Magacin(IDGradiliste, IDZaposleni, Plata) VALUES(@IDGradiliste, @IDSef, @plata)
+		DECLARE	@return_value int
+		SET @IDMagacinRet = SCOPE_IDENTITY()
+		EXEC	@return_value = [dbo].[ZaposliUMagacin]
+		@IDZaposleni = @IDSef,
+		@IDMagacin = @IDMagacinRet
+
+		IF @return_value = -1
+		BEGIN
+			IF @@TRANCOUNT > 0
+				ROLLBACK TRANSACTION
+		END
+
+
+	END TRY
+	BEGIN CATCH
+		SELECT
+			ERROR_NUMBER() AS ErrorNumber
+			,ERROR_SEVERITY() AS ErrorSeverity
+			,ERROR_STATE() AS ErrorState
+			,ERROR_PROCEDURE() AS ErrorProcedure
+			,ERROR_LINE() AS ErrorLine
+			,ERROR_MESSAGE() AS ErrorMessage;
+			IF @@TRANCOUNT > 0
+		BEGIN
+			ROLLBACK TRANSACTION;
+		END
+		RETURN -1;
+	END CATCH
+	IF @@TRANCOUNT > 0
+		COMMIT TRANSACTION;
+	RETURN @IDMagacinRet
+
+END
+
+GO
+USE [Projekat]
+GO
+
+/****** Object:  StoredProcedure [dbo].[InsertIma]    Script Date: 19.05.2017. 3:16:54 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[InsertIma]
+	-- Add the parameters for the stored procedure here
+	@IDMagacin IDType,
+	@IDRoba IDType
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	DECLARE @IDIma IDType
+
+    -- Insert statements for procedure here
+	BEGIN TRANSACTION
+	BEGIN TRY
+		INSERT INTO Ima(IDMagacin, IDRoba)
+		VALUES (@IDMagacin, @IDRoba)
+		SET @IDIma = SCOPE_IDENTITY()
+	END TRY
+	BEGIN CATCH
+			SELECT
+			ERROR_NUMBER() AS ErrorNumber
+			,ERROR_SEVERITY() AS ErrorSeverity
+			,ERROR_STATE() AS ErrorState
+			,ERROR_PROCEDURE() AS ErrorProcedure
+			,ERROR_LINE() AS ErrorLine
+			,ERROR_MESSAGE() AS ErrorMessage;
+			IF @@TRANCOUNT > 0
+		BEGIN
+			ROLLBACK TRANSACTION;
+		END
+		RETURN -1;
+
+	END CATCH
+	IF @@TRANCOUNT > 0
+		COMMIT TRAN
+	RETURN @IDIma
+
+END
+
+
+GO
+
+
+USE [Projekat]
+GO
+
+/****** Object:  StoredProcedure [dbo].[InsertImaKolicina]    Script Date: 19.05.2017. 3:17:02 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[InsertImaKolicina]
+	-- Add the parameters for the stored procedure here
+	@IDMagacin IDType,
+	@IDRoba IDType,
+	@kolicina FloatType
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	DECLARE @IDIma IDType
+
+	BEGIN TRANSACTION
+		BEGIN TRY
+		DECLARE	@return_value int
+		EXEC	@return_value = [dbo].[InsertIma]
+		@IDMagacin = @IDMagacin,
+		@IDRoba= @IDRoba
+
+		IF @return_value = -1
+		BEGIN
+			THROW -1, 'Something is wrong with execution of InsertIma', 1;
+		END
+		SET @IDIma = @return_value
+
+		INSERT INTO ImaKolicine(IDIma, Kolicina)
+		VALUES (@IDIma, @kolicina)
+
+		END TRY
+			BEGIN CATCH
+		SELECT
+			ERROR_NUMBER() AS ErrorNumber
+			,ERROR_SEVERITY() AS ErrorSeverity
+			,ERROR_STATE() AS ErrorState
+			,ERROR_PROCEDURE() AS ErrorProcedure
+			,ERROR_LINE() AS ErrorLine
+			,ERROR_MESSAGE() AS ErrorMessage;
+			IF @@TRANCOUNT > 0
+			BEGIN
+				ROLLBACK TRANSACTION;
+			END
+		RETURN -1;
+	END CATCH
+	IF @@TRANCOUNT > 0
+		COMMIT TRANSACTION;
+	RETURN @IDIma
+
+
+
+
+END
+
+GO
+
+
+USE [Projekat]
+GO
+
+/****** Object:  StoredProcedure [dbo].[InsertSadrzi]    Script Date: 19.05.2017. 3:17:11 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[InsertSadrzi]
+	-- Add the parameters for the stored procedure here
+	@IDRoba IDType,
+	@IDNorma IDType
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+   -- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	DECLARE @IDSadrzi IDType
+
+    -- Insert statements for procedure here
+	BEGIN TRANSACTION
+	BEGIN TRY
+		INSERT INTO Sadrzi(IDNorma, IDRoba)
+		VALUES (@IDNorma, @IDRoba)
+		SET @IDSadrzi = SCOPE_IDENTITY()
+	END TRY
+	BEGIN CATCH
+			SELECT
+			ERROR_NUMBER() AS ErrorNumber
+			,ERROR_SEVERITY() AS ErrorSeverity
+			,ERROR_STATE() AS ErrorState
+			,ERROR_PROCEDURE() AS ErrorProcedure
+			,ERROR_LINE() AS ErrorLine
+			,ERROR_MESSAGE() AS ErrorMessage;
+			IF @@TRANCOUNT > 0
+		BEGIN
+			ROLLBACK TRANSACTION;
+		END
+		RETURN -1;
+
+	END CATCH
+	IF @@TRANCOUNT > 0
+		COMMIT TRAN
+	RETURN @IDSadrzi
+END
+
+GO
+
+
+USE [Projekat]
+GO
+
+/****** Object:  StoredProcedure [dbo].[InsertSadrziKolicina]    Script Date: 19.05.2017. 3:17:18 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE [dbo].[InsertSadrziKolicina]
+	-- Add the parameters for the stored procedure here
+
+	@IDRoba IDType,
+	@IDNorma IDType,
+	@kolicina FloatType
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+	DECLARE @IDSadrzi IDType
+
+	BEGIN TRANSACTION
+		BEGIN TRY
+		DECLARE	@return_value IDType
+		EXEC	@return_value = [dbo].[InsertSadrzi]
+		@IDRoba = @IDRoba,
+		@IDNorma = @IDNorma
+
+		IF @return_value = -1
+		BEGIN
+			THROW -1, 'Something is wrong with execution of InsertSadrzi', 1;
+		END
+		SET @IDSadrzi = @return_value
+
+		INSERT INTO SadrziKolicina(IDSadrzi, Kolicina)
+		VALUES (@IDSadrzi, @kolicina)
+
+		END TRY
+			BEGIN CATCH
+		SELECT
+			ERROR_NUMBER() AS ErrorNumber
+			,ERROR_SEVERITY() AS ErrorSeverity
+			,ERROR_STATE() AS ErrorState
+			,ERROR_PROCEDURE() AS ErrorProcedure
+			,ERROR_LINE() AS ErrorLine
+			,ERROR_MESSAGE() AS ErrorMessage;
+			IF @@TRANCOUNT > 0
+			BEGIN
+				ROLLBACK TRANSACTION;
+			END
+		RETURN -1;
+	END CATCH
+	IF @@TRANCOUNT > 0
+		COMMIT TRANSACTION;
+	RETURN @IDSadrzi
+END
+
+GO
+
+
+USE Projekat
+CREATE USER popina FOR LOGIN popina
+GO
+
+USE Projekat
+EXEC sp_addrolemember 'db_datawriter', 'popina'
+GO
 
 
 
