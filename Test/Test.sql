@@ -64,16 +64,22 @@ SELECT * FROM Rad
 
 SELECT * FROM Posao
 
+DECLARE @DatumPocetka DateType
+DECLARE @DatumKraja DateType
+
+SET @DatumPocetka = '2011/11/11'
+SET @DatumKraja = '2016/11/5'
+
+SELECT * FROM RAD 
+WHERE (IDPosao =42) AND  ( (DatumPocetka < @DatumPocetka) OR (DatumPocetka > @DatumKraja) OR (DatumKraja > @DatumKraja) OR (DatumKraja < @DatumPocetka));
+
 DELETE FROM RAD
 WHERE IDRad = 27
 
-UPDATE RAD 
-SET DatumKraja = '2016/12/12'
-WHERE IDRad = 18
 
-INSERT INTO Rad(IDPosao, IDZaposleni, DatumPocetka, DatumKraja)
-VALUES (34, 193, '2016/12/12', '2016/12/12')
+SELECT * FROM Rad
+SELECT * FROM Posao
 
-INSERT INTO Ocena(IDRad, Ocena)
-VALUES (32, 10)
-
+UPDATE Posao 
+SET DatumPocetka='20111111' 
+WHERE IDPosao = 42
