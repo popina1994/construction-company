@@ -150,12 +150,13 @@ public class JavniTest {
         int idZ3P1 = f.zaposleniRadiNaPoslu(listaZaposlenih.get(3), idPosao1, trenutnoVreme);
         Date pocetakRadaZ3P1 = trenutnoVreme;
         f.zaposleniDobijaOcenu(idZ2P1, 7);
+        f.obrisiOcenuZaposlenom(idZ2P1);
+        f.zaposleniDobijaOcenu(idZ2P1, 7);
         f.zaposleniDobijaOcenu(idZ3P1, 9);
         
         List<Integer> zaduzenjaOpreme = new ArrayList<>();
         
         trenutnoVreme = Date.valueOf("2016-06-10");
-        // TO DO add procedure for magacin 
         int idZO = f.zaposleniZaduzujeOpremu(listaZaposlenih.get(2), idMagacin, htzOprema.get(0), trenutnoVreme, "...");
         zaduzenjaOpreme.add(idZO);
         
@@ -271,7 +272,7 @@ public class JavniTest {
         
         f.isplatiPlateZaposlenimaUSvimMagacinima();
         
-        if(f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(0)).compareTo(new BigDecimal(500.00)) == 0
+            if(f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(0)).compareTo(new BigDecimal(500.00)) == 0
         && f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(1)).compareTo(new BigDecimal(500.00)) == 0)
             procenata += 10;
         

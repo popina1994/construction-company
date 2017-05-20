@@ -608,7 +608,36 @@ public class Zd130033 extends Funkcionalnosti{
 
     @Override
     public int isplatiPlateZaposlenimaUSvimMagacinima() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        CallableStatement callableStatement = null; 
+        final int ERROR_CODE = 1;
+        final int OK_CODE = 0;
+        
+        try {
+            String query = "{? = CALL IsplatiUSvimMagacinima() }";
+            Connection connection = DB.getConnection();
+            
+            callableStatement = connection.prepareCall(query);
+            callableStatement.registerOutParameter(1, java.sql.Types.INTEGER);
+            callableStatement.execute();
+            
+            return OK_CODE;
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (callableStatement != null)
+            {
+                try {
+                    callableStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override
@@ -1315,36 +1344,31 @@ public class Zd130033 extends Funkcionalnosti{
 
     @Override
     public int zavrsiPosao(int idPosao, Date datumKraja) {
-         PreparedStatement preparedStatement = null; 
+         CallableStatement callableStatement = null;
         final int ERROR_CODE = 1;
         final int OK_CODE = 0;
         
         try {
-            String query = "UPDATE Posao SET DatumKraja = ?,Status='Z' "
-                    + "WHERE IDPosao=?";
+            String query = "{? = CALL ZavrsiRadIDajPlateIZavrsiPosao(?, ?) }";
             Connection connection = DB.getConnection();
-            
-            preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setDate(1, datumKraja);
-            preparedStatement.setInt(2, idPosao);
-            preparedStatement.executeUpdate();
+            callableStatement = connection.prepareCall(query);
+            callableStatement.registerOutParameter(1, java.sql.Types.INTEGER);
+            callableStatement.setInt(2, idPosao);
+            callableStatement.setDate(3, datumKraja);
+            callableStatement.execute();
             return OK_CODE;
             
         } catch (SQLException ex) {
                 Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
             return ERROR_CODE;
         }
-        finally
-        {
-            if (preparedStatement != null)
-            {
-                try {
-                    preparedStatement.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
-                    return ERROR_CODE;
-                }
-            }
+        finally{
+             try {
+                 callableStatement.close();
+             } catch (SQLException ex) {
+                 Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                 return ERROR_CODE;
+             }
         }
     }
 
@@ -1480,7 +1504,32 @@ public class Zd130033 extends Funkcionalnosti{
 
     @Override
     public int obrisiOcenuZaposlenom(int idZaposleniNaPoslu) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+          final int ERROR_CODE = 1;
+        final int OK_CODE = 0;
+        PreparedStatement preparedStatement = null;
+        try {
+            String query = "DELETE FROM Ocena WHERE IDRad = ?";
+            Connection connection = DB.getConnection();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, idZaposleniNaPoslu);
+            preparedStatement.executeUpdate();
+            return OK_CODE;
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override
