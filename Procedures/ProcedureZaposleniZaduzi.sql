@@ -45,6 +45,9 @@ BEGIN
 		INSERT INTO Zaduzio(IDRoba, IDMagacin, IDZaposleni, DatumZaduzenja, DatumRazduzenja, Napomena)
 		VALUES (@IDRoba, @IDMagacin, @IDZaposleni, @DatumZaduzenja, NULL, @Napomena)
 		SET @IDZaduzio  = SCOPE_IDENTITY()
+		UPDATE Zaposleni
+		SET BrojZaduzeneOpreme = BrojZaduzeneOpreme + 1
+		WHERE IDZaposleni = @IDZaposleni
 		COMMIT TRAN
 		RETURN @IDZaduzio 
 	END TRY

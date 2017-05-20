@@ -149,7 +149,6 @@ public class JavniTest {
         trenutnoVreme = Date.valueOf("2016-01-10");
         int idZ3P1 = f.zaposleniRadiNaPoslu(listaZaposlenih.get(3), idPosao1, trenutnoVreme);
         Date pocetakRadaZ3P1 = trenutnoVreme;
-        // TO DO add check constraint for mark.
         f.zaposleniDobijaOcenu(idZ2P1, 7);
         f.zaposleniDobijaOcenu(idZ3P1, 9);
         

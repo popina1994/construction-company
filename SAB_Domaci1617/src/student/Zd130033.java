@@ -721,7 +721,38 @@ public class Zd130033 extends Funkcionalnosti{
 
     @Override
     public int pogledajBrojJedinicaRobeUMagacinu(int idRoba, int idMagacin) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        final int ERROR_CODE = -1;
+        PreparedStatement preparedStatement = null;
+        try {
+            String query = "SELECT Jedinica FROM Ima, ImaJedinica "
+                    + "WHERE Ima.IDIma = ImaJedinica.IDIma AND IDMagacin=? "
+                    + "AND IDRoba=?";
+            Connection connection = DB.getConnection();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, idMagacin);
+            preparedStatement.setInt(2, idRoba);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (!resultSet.next())
+            {
+                return ERROR_CODE;
+            }
+            return resultSet.getInt(1);
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
     
     private static final String HTZ_NAME = "HTZ";
@@ -925,12 +956,84 @@ public class Zd130033 extends Funkcionalnosti{
 
     @Override
     public int zaposleniZaduzujeOpremu(int idZaposlenogKojiZaduzuje, int idMagacin, int idRoba, Date datumZaduzenja, String napomena) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         CallableStatement callableStatement = null; 
+        final int ERROR_CODE = -1;
+        
+        try {
+            String query = "{? = CALL ZaposleniZaduzi(?, ?, ?, ?, ?) }";
+            Connection connection = DB.getConnection();
+            
+            callableStatement = connection.prepareCall(query);
+            callableStatement.registerOutParameter(1, java.sql.Types.INTEGER);
+            callableStatement.setInt(2, idZaposlenogKojiZaduzuje);
+            callableStatement.setInt(3, idMagacin);
+            callableStatement.setInt(4, idRoba);
+            callableStatement.setDate(5, datumZaduzenja);
+            callableStatement.setString(6, napomena);
+            
+            callableStatement.execute();
+            
+            if (ERROR_CODE != callableStatement.getInt(1))
+            {
+                return callableStatement.getInt(1);
+            }
+            else 
+            {
+                return ERROR_CODE;
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (callableStatement != null)
+            {
+                try {
+                    callableStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override
     public int zaposleniRazduzujeOpremu(int idZaduzenjaOpreme, Date datumRazduzenja) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         CallableStatement callableStatement = null; 
+        final int ERROR_CODE = 1;
+        final int OK_CODE = 0;
+        
+        try {
+            String query = "{? = CALL ZaposleniRazduzi(?, ?) }";
+            Connection connection = DB.getConnection();
+            
+            callableStatement = connection.prepareCall(query);
+            callableStatement.registerOutParameter(1, java.sql.Types.INTEGER);
+            callableStatement.setInt(2, idZaduzenjaOpreme);
+            callableStatement.setDate(3, datumRazduzenja);
+            
+            callableStatement.execute();
+            return OK_CODE;
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (callableStatement != null)
+            {
+                try {
+                    callableStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override
@@ -1143,26 +1246,32 @@ public class Zd130033 extends Funkcionalnosti{
 
     @Override
     public int obrisiPosao(int idPosao) {
-         final int ERROR_CODE = 1;
+        final int ERROR_CODE = 1;
         final int OK_CODE = 0;
-        PreparedStatement preparedStatement = null;
+        CallableStatement callableStatement = null;
+        
         try {
-            String query = "DELETE FROM Posao WHERE IDPosao = ?";
+            String query = "{?=CALL DeletePosao(?) }";
             Connection connection = DB.getConnection();
-            preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, idPosao);
-            preparedStatement.executeUpdate();
-            return OK_CODE;
+            
+            callableStatement = connection.prepareCall(query);
+            callableStatement.registerOutParameter(1, java.sql.Types.INTEGER);
+            callableStatement.setInt(2, idPosao);
+            callableStatement.execute();
+            
+            int retVal = callableStatement.getInt(1);
+            return retVal;
+            
         } catch (SQLException ex) {
             Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
             return ERROR_CODE;
         }
         finally
         {
-            if (preparedStatement != null)
+            if (callableStatement != null)
             {
                 try {
-                    preparedStatement.close();
+                    callableStatement.close();
                 } catch (SQLException ex) {
                     Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
                     return ERROR_CODE;
@@ -1226,7 +1335,38 @@ public class Zd130033 extends Funkcionalnosti{
 
     @Override
     public int zaposleniJeZavrsioSaRadomNaPoslu(int idZaposleniNaPoslu, Date datumKraja) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         PreparedStatement preparedStatement = null; 
+        final int ERROR_CODE = 1;
+        final int OK_CODE = 0;
+        
+        try {
+            String query = "UPDATE RAD " 
+                            + " SET DatumKraja = ? "
+                    + "WHERE IDRad=?";
+            Connection connection = DB.getConnection();
+            
+            preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setDate(1, datumKraja);
+            preparedStatement.setInt(2, idZaposleniNaPoslu);
+            preparedStatement.executeUpdate();
+            return OK_CODE;
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override
@@ -1241,7 +1381,43 @@ public class Zd130033 extends Funkcionalnosti{
 
     @Override
     public int zaposleniDobijaOcenu(int idZaposleniNaPoslu, int ocena) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         PreparedStatement preparedStatement = null; 
+        final int ERROR_CODE = -1;
+        
+        try {
+            String query = "INSERT INTO Ocena (IDRad, Ocena)" 
+                            + "VALUES ( ?, ?)";
+            Connection connection = DB.getConnection();
+            
+            preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setInt(1, idZaposleniNaPoslu);
+            preparedStatement.setInt(2, ocena);
+            preparedStatement.executeUpdate();
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            if (resultSet.next())
+            {
+                return resultSet.getInt(1);
+            }
+            else
+            {
+                return ERROR_CODE;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override
