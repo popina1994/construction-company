@@ -66,15 +66,19 @@ public class JavniTest {
         System.out.println(itListZap.next());
         
         int idMagacin = f.unesiMagacin(listaZaposlenih.get(0), new BigDecimal(500.00), idGradiliste);
-            f.zaposleniRadiUMagacinu(listaZaposlenih.get(1), idMagacin);
+        f.zaposleniNeRadiUMagacinu(listaZaposlenih.get(0));
+        f.obrisiMagacin(idMagacin);
+        idMagacin = f.unesiMagacin(listaZaposlenih.get(0), new BigDecimal(500.00), idGradiliste);
+        f.zaposleniRadiUMagacinu(listaZaposlenih.get(1), idMagacin);
         
         int idNUD = f.unesiNormuUgradnogDela("Ugradni deo 1", new BigDecimal(800), new BigDecimal(50));
         f.obrisiNormuUgradnogDela(idNUD);
         idNUD = f.unesiNormuUgradnogDela("Ugradni deo 1", new BigDecimal(800), new BigDecimal(50));
         
+        int idRobaPesak = -1;
         int idRoba = f.unesiRobu("Pesak", "0001", idMaterijal);
         f.obrisiRobu(idRoba);
-        idRoba = f.unesiRobu("Pesak", "0001", idMaterijal);
+        idRoba = idRobaPesak = f.unesiRobu("Pesak", "0001", idMaterijal);
         f.unesiRobuUMagacinPoKolicini(idRoba, idMagacin, new BigDecimal(3000));
         f.unesiPotrebanMaterijalPoKolicini(idRoba, idNUD, new BigDecimal(500));
         
@@ -138,16 +142,26 @@ public class JavniTest {
         f.unesiRobuUMagacinPoBrojuJedinica(idRoba, idMagacin, 50);
         htzOprema.add(idRoba);
         
+        System.out.println(f.dohvatiSvuRobu().get(0));
+        
         trenutnoVreme = Date.valueOf("2016-01-01");
+        Date trenutnoVreme2 = Date.valueOf("2016-01-02");
         Date pocetakPosla1 = trenutnoVreme;
         int idPosao1 = f.unesiPosao(idNUD, idSprat0, trenutnoVreme);
+        if ((new BigDecimal(2500)).compareTo(f.pogledajKolicinuRobeUMagacinu(idRobaPesak, idMagacin)) == 0)
+        {
+            procenata += 10;
+        }
         f.obrisiPosao(idPosao1);
         idPosao1 = f.unesiPosao(idNUD, idSprat0, trenutnoVreme);
-        // TODO : add check constraint for time
+        trenutnoVreme2 =  Date.valueOf("2015-12-31");
+        f.izmeniDatumPocetkaZaPosao(idPosao1, trenutnoVreme2);
         int idZ2P1 = f.zaposleniRadiNaPoslu(listaZaposlenih.get(2), idPosao1, trenutnoVreme);
         Date pocetakRadaZ2P1 = trenutnoVreme;
         trenutnoVreme = Date.valueOf("2016-01-10");
+        trenutnoVreme2 = Date.valueOf("2016-01-11");
         int idZ3P1 = f.zaposleniRadiNaPoslu(listaZaposlenih.get(3), idPosao1, trenutnoVreme);
+        f.izmeniDatumPocetkaRadaZaposlenogNaPoslu(idZ3P1, trenutnoVreme2);
         Date pocetakRadaZ3P1 = trenutnoVreme;
         f.zaposleniDobijaOcenu(idZ2P1, 7);
         f.obrisiOcenuZaposlenom(idZ2P1);
@@ -205,12 +219,15 @@ public class JavniTest {
         f.zaposleniJeZavrsioSaRadomNaPoslu(idZ2P1, trenutnoVreme);
         Date krajRadaZ2P1 = trenutnoVreme;
         trenutnoVreme = Date.valueOf("2016-11-15");
+        trenutnoVreme2 = Date.valueOf("2016-11-16");
         f.zaposleniJeZavrsioSaRadomNaPoslu(idZ3P1, trenutnoVreme);
+        f.izmeniDatumKrajaRadaZaposlenogNaPoslu(idZ3P1, trenutnoVreme2);
         Date krajRadaZ3P1 = trenutnoVreme;
         
         trenutnoVreme = Date.valueOf("2016-11-25");
+        trenutnoVreme2 = Date.valueOf("2016-11-24");
         Date krajPosla1 = trenutnoVreme;
-        f.zavrsiPosao(idPosao1, trenutnoVreme);
+        f.zavrsiPosao(idPosao1, trenutnoVreme2);
         
         BigDecimal jedinicnaPlataNormeUgradnogDela = f.dohvatiJedinicnuPlatuRadnikaNormeUgradnogDela(idNUD);
         
@@ -273,9 +290,26 @@ public class JavniTest {
         f.isplatiPlateZaposlenimaUSvimMagacinima();
         
             if(f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(0)).compareTo(new BigDecimal(500.00)) == 0
-        && f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(1)).compareTo(new BigDecimal(500.00)) == 0)
+                && f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(1)).compareTo(new BigDecimal(500.00)) == 0)
             procenata += 10;
         
+        f.zaposleniNeRadiUMagacinu(listaZaposlenih.get(1));
+        f.isplatiPlateZaposlenimaUSvimMagacinima();
+        if(f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(0)).compareTo(new BigDecimal(1000.00)) == 0
+            && f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(1)).compareTo(new BigDecimal(500.00)) == 0)
+            procenata += 10;
+        
+        f.izmeniPlatuZaMagacin(idMagacin, new BigDecimal(1000));
+        f.isplatiPlateZaposlenimaUMagacinu(idMagacin);
+        if(f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(0)).compareTo(new BigDecimal(2000.00)) == 0
+            && f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(1)).compareTo(new BigDecimal(500.00)) == 0)
+            procenata += 10;
+        
+        f.zaposleniNeRadiUMagacinu(listaZaposlenih.get(0));    
+        f.isplatiPlateZaposlenimaUSvimMagacinima();
+        if(f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(0)).compareTo(new BigDecimal(2000.00)) == 0
+            && f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(1)).compareTo(new BigDecimal(500.00)) == 0)
+            procenata += 10;
         if(f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(2)).compareTo(isplacenoZaposlenom2) == 0
         && f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(3)).compareTo(isplacenoZaposlenom3) == 0)
             procenata += 20;
