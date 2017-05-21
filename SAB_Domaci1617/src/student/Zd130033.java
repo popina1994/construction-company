@@ -623,7 +623,38 @@ public class Zd130033 extends Funkcionalnosti{
 
     @Override
     public int izmeniSefaZaMagacin(int idMagacin, int idSefNovo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       CallableStatement callableStatement = null; 
+        final int ERROR_CODE = 1;
+        final int OK_CODE = 0;
+        
+        try {
+            String query = "{? = CALL IzmeniSefa(?, ?) }";
+            Connection connection = DB.getConnection();
+            
+            callableStatement = connection.prepareCall(query);
+            callableStatement.registerOutParameter(1, java.sql.Types.INTEGER);
+            callableStatement.setInt(2, idMagacin);
+            callableStatement.setInt(3, idSefNovo);
+            callableStatement.execute();
+            
+            return OK_CODE;
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (callableStatement != null)
+            {
+                try {
+                    callableStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override
@@ -1501,7 +1532,33 @@ public class Zd130033 extends Funkcionalnosti{
 
     @Override
     public int obrisiPotrebanMaterijal(int idRobaKojaJePotrosniMaterijal, int idNormaUgradnogDela) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         final int ERROR_CODE = 1;
+        final int OK_CODE = 0;
+        PreparedStatement preparedStatement = null;
+        try {
+            String query = "DELETE FROM Sadrzi WHERE IDROba = ? AND IDNorma=?";
+            Connection connection = DB.getConnection();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, idRobaKojaJePotrosniMaterijal);
+            preparedStatement.setInt(2, idNormaUgradnogDela);
+            preparedStatement.executeUpdate();
+            return OK_CODE;
+        } catch (SQLException ex) {
+            Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+            return ERROR_CODE;
+        }
+        finally
+        {
+            if (preparedStatement != null)
+            {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
+                    return ERROR_CODE;
+                }
+            }
+        }
     }
 
     @Override

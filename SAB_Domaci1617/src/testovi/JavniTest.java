@@ -88,8 +88,9 @@ public class JavniTest {
         
         idRoba = f.unesiRobu("Cement", "0003", idMaterijal);
         f.unesiRobuUMagacinPoKolicini(idRoba, idMagacin, new BigDecimal(3000));
-        f.unesiPotrebanMaterijalPoKolicini(idRoba, idNUD, new BigDecimal(500));
-        
+        int idPotMat = f.unesiPotrebanMaterijalPoKolicini(idRoba, idNUD, new BigDecimal(500));
+        f.obrisiPotrebanMaterijal(idRoba, idNUD);
+        idPotMat = f.unesiPotrebanMaterijalPoKolicini(idRoba, idNUD, new BigDecimal(500));
         int idRobaPlocica;
         idRoba = idRobaPlocica = f.unesiRobu("Keramicka plocica", "0004", idMaterijal);
         f.unesiRobuUMagacinPoBrojuJedinica(idRoba, idMagacin, 3000);
@@ -311,9 +312,23 @@ public class JavniTest {
         if(f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(0)).compareTo(new BigDecimal(2000.00)) == 0
             && f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(1)).compareTo(new BigDecimal(500.00)) == 0)
             procenata += 10;
+        
         if(f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(2)).compareTo(isplacenoZaposlenom2) == 0
         && f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(3)).compareTo(isplacenoZaposlenom3) == 0)
             procenata += 20;
+        
+        f.izmeniSefaZaMagacin(idMagacin, listaZaposlenih.get(1));
+         f.isplatiPlateZaposlenimaUSvimMagacinima();
+        if(f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(0)).compareTo(new BigDecimal(2000.00)) == 0
+            && f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(1)).compareTo(new BigDecimal(1500.00)) == 0)
+            procenata += 10;
+        f.izmeniSefaZaMagacin(idMagacin, listaZaposlenih.get(0));
+        f.isplatiPlateZaposlenimaUSvimMagacinima();
+        if(f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(0)).compareTo(new BigDecimal(3000.00)) == 0
+            && f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(1)).compareTo(new BigDecimal(2500.00)) == 0)
+            procenata += 10;
+        
+        
         if ((new BigDecimal(2000)).compareTo(f.uzmiRobuIzMagacinaPoKolicini(idRobaPesak, idMagacin, new BigDecimal(1000000))) == 0)
         {
             procenata += 10;
