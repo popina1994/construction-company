@@ -90,7 +90,8 @@ public class JavniTest {
         f.unesiRobuUMagacinPoKolicini(idRoba, idMagacin, new BigDecimal(3000));
         f.unesiPotrebanMaterijalPoKolicini(idRoba, idNUD, new BigDecimal(500));
         
-        idRoba = f.unesiRobu("Keramicka plocica", "0004", idMaterijal);
+        int idRobaPlocica;
+        idRoba = idRobaPlocica = f.unesiRobu("Keramicka plocica", "0004", idMaterijal);
         f.unesiRobuUMagacinPoBrojuJedinica(idRoba, idMagacin, 3000);
         f.unesiPotrebanMaterijalPoBrojuJedinica(idRoba, idNUD, 500);
         
@@ -313,6 +314,15 @@ public class JavniTest {
         if(f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(2)).compareTo(isplacenoZaposlenom2) == 0
         && f.dohvatiUkupanIsplacenIznosZaZaposlenog(listaZaposlenih.get(3)).compareTo(isplacenoZaposlenom3) == 0)
             procenata += 20;
+        if ((new BigDecimal(2000)).compareTo(f.uzmiRobuIzMagacinaPoKolicini(idRobaPesak, idMagacin, new BigDecimal(1000000))) == 0)
+        {
+            procenata += 10;
+        };
+        
+        if (f.uzmiRobuIzMagacinaPoBrojuJedinica(idRobaPlocica, idMagacin, 3000) == 2000)
+        {
+            procenata += 10;
+        }
         
         return procenata;
     }
