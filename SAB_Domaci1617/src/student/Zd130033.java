@@ -994,11 +994,6 @@ public class Zd130033 extends Funkcionalnosti{
         }
     }
     
-    private static final String HTZ_NAME = "HTZ";
-    private static final String ALAT_NAME = "alat";
-    private static final String MAT_NAME = "materijal";
-    
-    
     @Override
     public int unesiTipRobe(String naziv) {
         PreparedStatement preparedStatement = null; 
@@ -1614,8 +1609,7 @@ public class Zd130033 extends Funkcionalnosti{
             callableStatement.setInt(2, idPosao);
             callableStatement.execute();
             
-            int retVal = callableStatement.getInt(1);
-            return retVal;
+            return OK_CODE;
             
         } catch (SQLException ex) {
             Logger.getLogger(Zd130033.class.getName()).log(Level.SEVERE, null, ex);
