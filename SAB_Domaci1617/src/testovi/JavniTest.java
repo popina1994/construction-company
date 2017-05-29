@@ -338,6 +338,7 @@ public class JavniTest {
         {
             procenata += 10;
         }
+        f.izmeniOcenuZaZaposlenogNaPoslu(-1, 4);
         
         return procenata;
     }
